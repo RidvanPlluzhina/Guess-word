@@ -1,2 +1,2 @@
 # JavaProject.June
-First project in Introduction to programming subject
+The first project in Introduction to programming subject.
