@@ -10,7 +10,7 @@ public class ReadtheWord {
 
     public ReadtheWord() {
         try (InputStream in = getClass().getResourceAsStream(fileName);
-             BufferedReader bf = new BufferedReader(new InputStreamReader(in))) {
+                BufferedReader bf = new BufferedReader(new InputStreamReader(in))) {
 
             String line;
             int lineCount = 1;
@@ -27,7 +27,8 @@ public class ReadtheWord {
     }
 
     public String getNextWord() {
-        if (words.isEmpty()) return " ";
+        if (words.isEmpty())
+            return " ";
 
         if (currentIndex >= words.size()) {
             currentIndex = 0; // Reset index if it exceeds the word count
@@ -42,5 +43,4 @@ public class ReadtheWord {
         return currentIndex;
     }
 
-	
 }
