@@ -50,7 +50,7 @@ public class Guessword extends Application {
     private int currentLetterIndex = 0;
     private SimpleIntegerProperty wrongGuesses = new SimpleIntegerProperty(0);
     private SimpleIntegerProperty uncoveredLetters = new SimpleIntegerProperty(0);
-    private SimpleIntegerProperty correctlyGuessedWords = new SimpleIntegerProperty(0);
+    private SimpleIntegerProperty correctlyGuessedLetters = new SimpleIntegerProperty(0);
     private SimpleIntegerProperty guessedWords = new SimpleIntegerProperty(0);
     private SimpleIntegerProperty newLetterCount = new SimpleIntegerProperty(0);
     private StringBuilder wrongLetters = new StringBuilder();
@@ -143,7 +143,6 @@ public class Guessword extends Application {
             alert.getButtonTypes().setAll(yesButton, noButton);
 
             ButtonType newQuizButton = new ButtonType("New Quiz");
-
             alert.getButtonTypes().add(newQuizButton);
 
             alert.showAndWait().ifPresent(buttonType -> {
@@ -161,6 +160,7 @@ public class Guessword extends Application {
 
                     newQuizConfirmation.showAndWait().ifPresent(newButtonType -> {
                         if (newButtonType == startNewQuizButton) {
+                            displayQuizResults1();
                             startNewQuiz();
                         }
                     });
@@ -182,7 +182,7 @@ public class Guessword extends Application {
 
         Text guessedLetters = new Text();
         guessedLetters.setFont(FONT1);
-        guessedLetters.textProperty().bind(Bindings.concat("Guessed Letters: ", correctlyGuessedWords.asString()));
+        guessedLetters.textProperty().bind(Bindings.concat("Guessed Letters: ", correctlyGuessedLetters.asString()));
 
         Text guessedWordsText = new Text();
         guessedWordsText.setFont(FONT1);
@@ -214,30 +214,63 @@ public class Guessword extends Application {
 
     private void resetStats() {
         wrongGuesses.set(0);
-        // uncoveredLetters.set(0);
-        correctlyGuessedWords.set(0);
+        correctlyGuessedLetters.set(0);
         newLetterCount.set(0);
         guessedWords.set(0);
+        wordsTried.clear();
+        uncoveredLetters.set(0);
     }
 
     public void displayQuizResults() {
         int totalWordsTried = wordsTried.size();
         int totalGuessedWords = guessedWords.get();
-        double percentage = (double) totalGuessedWords / totalWordsTried * 100;
+        int totalUncoveredLetters = uncoveredLetters.get();
+
+        double average = (double) (totalGuessedWords + totalWordsTried + totalUncoveredLetters) / 3;
+        double wrong = (double) (totalWordsTried - totalGuessedWords);
 
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Quiz Results");
         alert.setHeaderText("");
-        alert.setContentText("Guessed Words: " + totalGuessedWords
-                + "\nGuessed Letters: " + correctlyGuessedWords.get()
+        alert.setContentText("Words tried: " + totalWordsTried
+                + "\nGuessed Words: " + totalGuessedWords
+                + "\nUncovered Letters: " + uncoveredLetters.get()
+                + "\nWrong words guessed: " + wrong
+                + "\nRatio of guesses: " + average + "%"
+                + "\nGuessed Letters: " + correctlyGuessedLetters.get()
                 + "\nWrong Letters: " + wrongGuesses.get()
-                + "\nNew Letter used: " + newLetterCount.get()
-                + "\nWords tried: " + totalWordsTried
-                + "\nRadio of guesses: " + percentage + "%");
+                + "\nNew Letter used: " + newLetterCount.get());
 
         alert.showAndWait().ifPresent(buttonType -> {
             if (buttonType == ButtonType.OK) {
                 Platform.exit();
+            }
+        });
+    }
+
+    public void displayQuizResults1() {
+        int totalWordsTried = wordsTried.size();
+        int totalGuessedWords = guessedWords.get();
+        int totalUncoveredLetters = uncoveredLetters.get();
+
+        double average = (double) (totalGuessedWords + totalWordsTried + totalUncoveredLetters) / 3;
+        double wrong = (double) (totalWordsTried - totalGuessedWords);
+
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Quiz Results");
+        alert.setHeaderText("");
+        alert.setContentText("Words tried: " + totalWordsTried
+                + "\nGuessed Words: " + totalGuessedWords
+                + "\nUncovered Letters: " + uncoveredLetters.get()
+                + "\nWrong words guessed: " + wrong
+                + "\nRatio of guesses: " + average + "%"
+                + "\nGuessed Letters: " + correctlyGuessedLetters.get()
+                + "\nWrong Letters: " + wrongGuesses.get()
+                + "\nNew Letter used: " + newLetterCount.get());
+
+        alert.showAndWait().ifPresent(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                startGame();
             }
         });
     }
@@ -247,30 +280,39 @@ public class Guessword extends Application {
             return;
         }
 
-        char nextLetter = word.get().charAt(currentLetterIndex);
+        int nextLetterIndex = currentLetterIndex;
 
-        Text t = alphabet.get(nextLetter);
-        if (!t.isStrikethrough()) {
-            t.setFill(Color.RED);
-            t.setStrikethrough(true);
+        while (nextLetterIndex < word.get().length()) {
+            char nextLetter = word.get().charAt(nextLetterIndex);
 
-            int occurrences = countOccurrences(word.get(), nextLetter);
-            uncoveredLetters.set(uncoveredLetters.get() - occurrences);
+            Text t = alphabet.get(nextLetter);
+            if (!t.isStrikethrough()) {
+                t.setFill(Color.RED);
+                t.setStrikethrough(true);
 
-            for (Node n : letters) {
-                Letter letter = (Letter) n;
-                if (letter.isEqualTo(nextLetter)) {
-                    lettersToGuess.set(lettersToGuess.get() - 1);
-                    letter.show();
+                int occurrences = countOccurrences(word.get(), nextLetter);
+                uncoveredLetters.set(uncoveredLetters.get() - occurrences);
+
+                for (Node n : letters) {
+                    Letter letter = (Letter) n;
+                    if (letter.isEqualTo(nextLetter) && !letter.isShown()) {
+                        lettersToGuess.set(lettersToGuess.get() - 1);
+                        letter.show();
+                        break; // Exit the loop after finding and showing the letter
+                    }
                 }
+
+                if (occurrences == 0) {
+                    wrongLetters.append(nextLetterIndex + 1).append(", ");
+                }
+
+                currentLetterIndex = nextLetterIndex + 1; // Update the current letter index
+                break; // Exit the loop after showing the letter
             }
 
-            if (occurrences == 0) {
-                wrongLetters.append(currentLetterIndex + 1).append(", ");
-            }
+            nextLetterIndex++;
         }
 
-        currentLetterIndex++;
         newLetterCount.set(newLetterCount.get() + 1);
 
         if (lettersToGuess.get() <= 0) {
@@ -305,12 +347,17 @@ public class Guessword extends Application {
         wrongGuessesText.setText("Wrong Letters: " + wrongLetters.toString());
     }
 
-    private static class Letter extends StackPane {
+    private class Letter extends StackPane {
         private Rectangle bg = new Rectangle(50, 60);
         private Text text;
         private Text questionMark;
         private StringProperty character = new SimpleStringProperty("");
         private boolean revealed;
+        private boolean shown;
+
+        public boolean isShown() {
+            return shown;
+        }
 
         public Letter(char letter) {
             bg.setFill(letter == ' ' ? Color.RED : Color.WHITE);
@@ -390,8 +437,8 @@ public class Guessword extends Application {
                 }
 
                 if (guessedCorrectly) {
-                    correctlyGuessedWords.set(correctlyGuessedWords.get() + 1);
-                    guessedLetters.setText("Guessed Letters: " + correctlyGuessedWords.get());
+                    correctlyGuessedLetters.set(correctlyGuessedLetters.get() + 1);
+                    guessedLetters.setText("Guessed Letters: " + correctlyGuessedLetters.get());
                 } else {
                     wrongGuesses.set(wrongGuesses.get() + 1);
                     wrongGuessesText.setText("Wrong Guesses: " + wrongGuesses.get());

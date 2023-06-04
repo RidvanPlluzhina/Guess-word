@@ -49,8 +49,9 @@ public class MenuHandler {
         dialog.setTitle("");
         dialog.setHeaderText("The application always shows three scores :\n"
                 + "The number of wrong guesses,\n"
-                + "The number of uncovered letters and\n"
-                + "The number of correctly guessed words. ");
+                + "The number of uncovered letters,\n"
+                + "The number of correctly guessed words and\n"
+                + "The ratio between tried and guessed words.");
 
         ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().add(okButton);
