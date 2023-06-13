@@ -1,3 +1,8 @@
+// This code defines a JavaFX class called ExplanatoryText that extends BorderPane. 
+// The class represents the GUI component for displaying explanatory text and a menu bar in a game application.
+
+
+
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
@@ -28,20 +33,21 @@ public class ExplanatoryText extends BorderPane {
             MenuHandler menuHandler = new MenuHandler();
             menuHandler.buttonsAction(event);
         });
-
+        
         MenuItem menuItem3 = new MenuItem("Scores");
         menuItem3.setOnAction(event -> {
             MenuHandler menuHandler = new MenuHandler();
             menuHandler.scoreAction(event);
         });
-
+        
         MenuItem menuItem4 = new MenuItem("Words and Definitions");
         menuItem4.setOnAction(event -> {
             MenuHandler menuHandler = new MenuHandler();
             menuHandler.wordsdefAction(event);
         });
 
-        gameLevelMenu.getItems().addAll(menuItem1, menuItem2, menuItem3, menuItem4);
+
+        gameLevelMenu.getItems().addAll(menuItem1, menuItem2,menuItem3,menuItem4);
         menuBar.getMenus().add(gameLevelMenu);
 
         setTop(menuBar);
@@ -49,8 +55,7 @@ public class ExplanatoryText extends BorderPane {
         VBox centerContent = new VBox();
         centerContent.setSpacing(100);
         centerContent.setAlignment(Pos.CENTER);
-        setBackground(new javafx.scene.layout.Background(
-                new javafx.scene.layout.BackgroundFill(Color.ANTIQUEWHITE, null, null)));
+        setBackground(new javafx.scene.layout.Background(new javafx.scene.layout.BackgroundFill(Color.ANTIQUEWHITE, null, null)));
 
         Text text1 = new Text("Welcome to the game \"Guess the word\"");
         text1.setUnderline(true);
@@ -59,9 +64,9 @@ public class ExplanatoryText extends BorderPane {
 
         Text text = new Text(
                 "This application is a game that is performed in the subject Introduction to Programming.\n"
-                        + "After running the application, the user will be able to see this explanatory text of the game.\n"
-                        + "For further clarification, we strongly suggest to check the menubar called \"Help dialogue\",\n"
-                        + "which is located at the top of the screen.To start with the quiz press the button \"Start Quiz\".");
+              + "After running the application, the user will be able to see this explanatory text of the game.\n"
+              + "For additional clarification, we strongly reccomend checking the \"Help dialogue\" in the menu bar,\n"
+              + "which is located at the top of the screen.To start with the quiz press the button \"Start Quiz\".");
 
         text.setFont(Font.font("Calibri", 25));
         text.setTextAlignment(TextAlignment.CENTER);

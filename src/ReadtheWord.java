@@ -10,12 +10,12 @@ public class ReadtheWord {
 
     public ReadtheWord() {
         try (InputStream in = getClass().getResourceAsStream(fileName);
-                BufferedReader bf = new BufferedReader(new InputStreamReader(in))) {
+             BufferedReader bf = new BufferedReader(new InputStreamReader(in))) {
 
             String line;
             int lineCount = 1;
             while ((line = bf.readLine()) != null) {
-                if (lineCount % 2 != 0) { // Check if line number is odd
+                if (lineCount % 2 != 0) { 
                     words.add(line);
                 }
                 lineCount++;
@@ -27,20 +27,27 @@ public class ReadtheWord {
     }
 
     public String getNextWord() {
-        if (words.isEmpty())
-            return " ";
+        if (words.isEmpty()) return " ";
 
         if (currentIndex >= words.size()) {
-            currentIndex = 0; // Reset index if it exceeds the word count
+            currentIndex = 0; 
         }
 
         String word = words.get(currentIndex);
-        currentIndex += 1; // Increment index for the next word
+        currentIndex += 1; 
+
+        if (currentIndex >= words.size()) {
+            currentIndex = 0; 
+        }
+
         return word;
     }
+
+
 
     public int getCurrentIndex() {
         return currentIndex;
     }
 
+	
 }

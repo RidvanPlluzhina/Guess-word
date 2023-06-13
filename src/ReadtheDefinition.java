@@ -10,12 +10,12 @@ public class ReadtheDefinition {
 
     public ReadtheDefinition() {
         try (InputStream in = getClass().getResourceAsStream(fileName);
-                BufferedReader bf = new BufferedReader(new InputStreamReader(in))) {
+             BufferedReader bf = new BufferedReader(new InputStreamReader(in))) {
 
             String line;
             int lineCount = 1;
             while ((line = bf.readLine()) != null) {
-                if (lineCount % 2 == 0) {
+                if (lineCount % 2 == 0) { 
                     definitions.add(line);
                 }
                 lineCount++;
@@ -27,21 +27,20 @@ public class ReadtheDefinition {
     }
 
     public String getNextDefinition() {
-        if (definitions.isEmpty())
-            return "No definitions available.";
+        if (definitions.isEmpty()) return "No definitions available.";
 
         if (currentIndex >= definitions.size()) {
-            currentIndex = 1;
+            currentIndex = 1; 
         }
 
         String definition = definitions.get(currentIndex);
-        currentIndex += 1;
+        currentIndex += 1; 
         return definition;
     }
 
+
     public String getDefinitionByIndex(int index) {
-        if (definitions.isEmpty())
-            return "No definitions available.";
+        if (definitions.isEmpty()) return "No definitions available.";
 
         if (index >= 0 && index < definitions.size()) {
             return definitions.get(index);

@@ -1,3 +1,5 @@
+// This code represents a JavaFX application with two main functionalities: displaying explanatory text and starting a game.
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
